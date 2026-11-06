@@ -12,31 +12,92 @@ struct DetailView: View{
     @State private var movieViewModel = MovieViewModel()
     
     var body: some View{
-        ScrollView{
-            VStack{
-                switch movieViewModel.state{
-                case .loading:
-                    ProgressView()
-                        .progressViewStyle(.circular)
+        ZStack{
+            Color.black.opacity(0.75).ignoresSafeArea()
+            ScrollView{
+                
+                VStack(spacing:16){
                     
-                case .loaded:
-                    if let movie = movieViewModel.movieDetail{
-                        AsyncImage(url: movie.poster){phase in
-                            if let image = phase.image{
-                                image
-                                    .resizable()
-                                    .scaledToFit()
+                    switch movieViewModel.state{
+                    case .loading:
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                        
+                    case .loaded:
+                        
+                        
+                        if let movie = movieViewModel.movieDetail{
+                            AsyncImage(url: movie.poster){phase in
+                                if let image = phase.image{
+                                    ZStack{
+                                        image
+                                            .resizable()
+                                            .scaledToFit()
+                                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                                            .overlay(
+                                                LinearGradient(colors: [.clear, .black.opacity(0.9)], startPoint: .top, endPoint: .bottom)
+                                            )
+                                            .frame(height: .infinity)
+                                        
+                                        VStack{
+                                            Spacer()
+                                            Text(movie.title)
+                                                .font(.title)
+                                                .fontWeight(.semibold)
+                                                .foregroundStyle(.white)
+                                        }
+                                    }
+                                    
+                                    
+                                    
+                                }
                             }
+                            
+                            HStack(spacing: 32){
+                                
+                                Text("\(Image(systemName: "star")) \(movie.imdbRating)")
+                                Text("\(Image(systemName: "clock")) \(movie.runtime)")
+                                Text("\(Image(systemName: "calendar")) \(movie.released)")
+                            }
+                            
+                            Divider()
+                                .background(.white)
+                            
+                            Text("Overview")
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .font(.title)
+                                .fontWeight(.semibold)
+                            Text(movie.plot)
+                            
+                            Divider()
+                                .background(.white)
+                            
+                            Text("Details")
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .font(.title)
+                                .fontWeight(.semibold)
+                            HStack(spacing: 20){
+                                Text("Director: \(movie.writer)")
+                                Text("Country: \(movie.country)")
+                                Text("Genre: \(movie.genre)")
+                            }
+                            
+                            
+                            
                         }
-                        Text(movie.title)
-                            .font(.headline)
+                        
+                        
+                            
+                        
+                        
+                        
+                    case .error(let error):
+                        Text("Произошла ошибка: \(error)")
+                        
                     }
-                    
-                    
-                case .error(let error):
-                    Text("Произошла ошибка: \(error)")
-
                 }
+                
+            
             }
         }
         .onAppear(){
@@ -46,6 +107,8 @@ struct DetailView: View{
                 
             }
         }
+        .foregroundStyle(.white)
+        .font(.headline)
     }
 
 }
