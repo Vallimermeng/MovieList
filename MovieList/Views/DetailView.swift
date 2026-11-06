@@ -6,10 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct DetailView: View{
     let movieOBJ: Movie
     @State private var movieViewModel = MovieViewModel()
+    
+    @Environment(\.modelContext)
+    private var modelContext
+    
     
     var body: some View{
         ZStack{
