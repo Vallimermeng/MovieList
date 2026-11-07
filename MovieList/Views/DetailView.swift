@@ -15,6 +15,9 @@ struct DetailView: View{
     @Environment(\.modelContext)
     private var modelContext
     
+    let descriptor = FetchDescriptor<FavoriteMovie>()
+    
+    
     
     var body: some View{
         ZStack{
@@ -58,11 +61,36 @@ struct DetailView: View{
                                 }
                             }
                             
-                            HStack(spacing: 32){
+                            HStack(spacing: 16){
                                 
                                 Text("\(Image(systemName: "star")) \(movie.imdbRating)")
                                 Text("\(Image(systemName: "clock")) \(movie.runtime)")
                                 Text("\(Image(systemName: "calendar")) \(movie.released)")
+                                
+                                Button("Добавить в избранное"){
+                                    do{
+                                        let resultFetch = try modelContext.fetch(descriptor)
+                                        
+                                        let hasFavorite = resultFetch.contains(where: {has in
+                                            has.imdbID == movie.imdbID
+                                            
+                                        })
+                                        
+                                        if !hasFavorite{
+                                            let favorite = FavoriteMovie(imdbID: movie.imdbID, title: movie.title, year: movie.year, poster: movie.poster.absoluteString)
+                                            modelContext.insert(favorite)
+                                            try modelContext.save()
+                                                        print("Фильм успешно добавлен в избранное!")
+                                        } else {
+                                            print("Этот фильм уже находится в избранном.")
+                                        }
+                                        
+                                        
+                                        
+                                    }catch{
+                                        print("Ошибка при работе с базой данных: \(error.localizedDescription)")
+                                    }
+                                }
                             }
                             
                             Divider()

@@ -12,7 +12,7 @@ class FavoriteMovie{
     @Attribute(.unique) var imdbID: String
     var title: String
     var year: String
-    var poster: String
+    var poster: String // url has more size, use string path to url
     
     init(imdbID: String, title: String, year: String, poster: String) {
         self.imdbID = imdbID
