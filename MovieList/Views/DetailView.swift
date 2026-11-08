@@ -11,11 +11,13 @@ import SwiftData
 struct DetailView: View{
     let movieOBJ: Movie
     @State private var movieViewModel = MovieViewModel()
+    @State private var isPressedFavorite = false
     
     @Environment(\.modelContext)
     private var modelContext
-    
     let descriptor = FetchDescriptor<FavoriteMovie>()
+    
+    
     
     
     
@@ -81,6 +83,7 @@ struct DetailView: View{
                                             modelContext.insert(favorite)
                                             try modelContext.save()
                                                         print("Фильм успешно добавлен в избранное!")
+                                            
                                         } else {
                                             print("Этот фильм уже находится в избранном.")
                                         }

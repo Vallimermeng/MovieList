@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
     
@@ -32,6 +33,10 @@ struct ContentView: View {
                             await movieViewModel.loadMovie(name: nameField)
                         }
                         isPressed = true // no toggle
+                    }
+                    
+                    NavigationLink("Посмотреть избранные"){
+                        FavoritesView()
                     }
                     
                     if(isPressed){
@@ -88,6 +93,8 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .modelContainer(for: FavoriteMovie.self, inMemory: true)
+        
         
     
 }
