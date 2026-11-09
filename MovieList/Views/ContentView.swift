@@ -35,9 +35,6 @@ struct ContentView: View {
                         isPressed = true // no toggle
                     }
                     
-                    NavigationLink("Посмотреть избранные"){
-                        FavoritesView()
-                    }
                     
                     if(isPressed){
                         
@@ -92,7 +89,7 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    HomeView()
         .modelContainer(for: FavoriteMovie.self, inMemory: true)
         
         
