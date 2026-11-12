@@ -85,7 +85,13 @@ struct DetailView: View{
                                         }
                                     }
                                 }else{
-                                    Text("Уже в избранном")
+                                    Button("Удалить из избранного"){
+                                        
+                                        if let movie = isHasMovie.first{
+                                            modelContext.delete(movie)
+                                        }
+                                        print("Удален из избранного")
+                                    }
                                 }
                             }
                             
@@ -133,6 +139,8 @@ struct DetailView: View{
     }
 
 }
+
+
 
 #Preview {
     DetailView(movieOBJ: Movie(

@@ -10,7 +10,8 @@ import SwiftData
 
 struct FavoritesView: View{
     @Query private var favorites: [FavoriteMovie]
-    
+    @Environment(\.modelContext)
+    private var modelContext
     
     var body: some View{
 
@@ -37,6 +38,18 @@ struct FavoritesView: View{
                                 .font(.headline)
                         }
                         .listRowBackground(Color.clear)
+                        .swipeActions(edge: .trailing){
+                            if #available(iOS 26.0, *) {
+                                Button(role: .destructive){
+                                    modelContext.delete(movie)
+                                    print("Фильм удален")
+                                }label: {
+                                    Label("Удалить", systemImage: "trash")
+                                }
+                            } else {
+                                // Fallback on earlier versions
+                            }
+                        }
                         
                     }
                 }
