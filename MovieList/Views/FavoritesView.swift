@@ -11,6 +11,7 @@ import SwiftData
 struct FavoritesView: View{
     @Query private var favorites: [FavoriteMovie]
     
+    
     var body: some View{
 
         NavigationStack{
@@ -52,7 +53,7 @@ struct FavoritesView: View{
 }
 
 #Preview {
-    ContentView()
+    HomeView()
         .modelContainer(for: FavoriteMovie.self, inMemory: true)
     
 //    FavoritesView(favorites: [FavoriteMovie(imdbID: "tt0816692", title: "Interstellar", year: "2014", poster: "https://m.media-amazon.com/images/M/MV5BYzdjMDAxZGItMjI2My00ODA1LTlkNzItOWFjMDU5ZDJlYWY3XkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg")])

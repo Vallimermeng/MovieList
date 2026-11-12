@@ -28,4 +28,5 @@ struct HomeView: View{
 
 #Preview {
     HomeView()
+        .modelContainer(for: FavoriteMovie.self, inMemory: true)
 }

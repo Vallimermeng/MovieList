@@ -11,15 +11,18 @@ import SwiftData
 struct DetailView: View{
     let movieOBJ: Movie
     @State private var movieViewModel = MovieViewModel()
-    @State private var isPressedFavorite = false
     
     @Environment(\.modelContext)
     private var modelContext
-    let descriptor = FetchDescriptor<FavoriteMovie>()
+    @Query private var isHasMovie: [FavoriteMovie]
     
-    
-    
-    
+    init(movieOBJ: Movie){
+        self.movieOBJ = movieOBJ
+        
+        _isHasMovie = Query(filter: #Predicate { $0.imdbID == movieOBJ.imdbID
+        })
+        
+    }
     
     var body: some View{
         ZStack{
@@ -69,30 +72,20 @@ struct DetailView: View{
                                 Text("\(Image(systemName: "clock")) \(movie.runtime)")
                                 Text("\(Image(systemName: "calendar")) \(movie.released)")
                                 
-                                Button("Добавить в избранное"){
-                                    do{
-                                        let resultFetch = try modelContext.fetch(descriptor)
-                                        
-                                        let hasFavorite = resultFetch.contains(where: {has in
-                                            has.imdbID == movie.imdbID
-                                            
-                                        })
-                                        
-                                        if !hasFavorite{
+                                if(isHasMovie.isEmpty){
+                                    Button("Добавить в избранное"){
+                                        do{
                                             let favorite = FavoriteMovie(imdbID: movie.imdbID, title: movie.title, year: movie.year, poster: movie.poster.absoluteString)
                                             modelContext.insert(favorite)
                                             try modelContext.save()
-                                                        print("Фильм успешно добавлен в избранное!")
+                                            print("Фильм успешно добавлен в избранное!")
                                             
-                                        } else {
-                                            print("Этот фильм уже находится в избранном.")
+                                        }catch{
+                                            print("Ошибка при работе с базой данных: \(error.localizedDescription)")
                                         }
-                                        
-                                        
-                                        
-                                    }catch{
-                                        print("Ошибка при работе с базой данных: \(error.localizedDescription)")
                                     }
+                                }else{
+                                    Text("Уже в избранном")
                                 }
                             }
                             
@@ -117,15 +110,7 @@ struct DetailView: View{
                                 Text("Country: \(movie.country)")
                                 Text("Genre: \(movie.genre)")
                             }
-                            
-                            
-                            
                         }
-                        
-                        
-                            
-                        
-                        
                         
                     case .error(let error):
                         Text("Произошла ошибка: \(error)")
@@ -156,4 +141,5 @@ struct DetailView: View{
         poster: URL(string: "https://m.media-amazon.com/images/M/MV5BYzdjMDAxZGItMjI2My00ODA1LTlkNzItOWFjMDU5ZDJlYWY3XkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg")!,
         imdbID: "tt0816692"
     ))
+    .modelContainer(for: FavoriteMovie.self, inMemory: true)
 }
