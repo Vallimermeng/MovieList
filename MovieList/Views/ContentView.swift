@@ -49,6 +49,9 @@ struct ContentView: View {
                         case .loaded:
                             ScrollView{
                                 VStack{
+                                    Button("Назад"){
+                                        isPressed = false
+                                    }
                                     ForEach(movieViewModel.movies, id:\.imdbID){movie in
                                         Text(movie.title)
                                         NavigationLink{
@@ -74,26 +77,42 @@ struct ContentView: View {
                     }
                     Divider()
                         .background(.black)
-                    Text("Последние просмотры")
-                        .font(.title)
-                        .font(.headline)
-                    HStack{
-                        
-                        ForEach(recentlyViewedMovie, id: \.imdbID){recentlyMovie in
-                            AsyncImage(url: URL(string: recentlyMovie.poster)!){phase in
-                                if let image = phase.image{
-                                    image
-                                        .resizable()
+                    
+                    
+                    if(!isPressed){
+                        Text("Последние просмотры")
+                            .font(.title)
+                            .font(.headline)
+                        ScrollView(.horizontal){
+                            HStack{
+                                
+                                ForEach(recentlyViewedMovie, id: \.imdbID){recentlyMovie in
+                                    HStack{
+                                        NavigationLink{
+                                            let movieOBJ = Movie(title: recentlyMovie.title, year: recentlyMovie.year, poster: URL(string: recentlyMovie.poster)!, imdbID: recentlyMovie.imdbID)
+                                            DetailView(movieOBJ: movieOBJ)
+                                        }label:{
+                                            AsyncImage(url: URL(string: recentlyMovie.poster)!){phase in
+                                                if let image = phase.image{
+                                                    image
+                                                        .resizable()
+                                                        .scaledToFit()
+                                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                }
+                                                
+                                            }
+                                            
+                                        }
+                                    }
+                                    Text(recentlyMovie.title)
                                         .scaledToFit()
-                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                    
+                                    
+                                    
+                                    
                                 }
-                                
-                                
                             }
-                            Text(recentlyMovie.title)
-                            
                         }
-                        
                     }
                     Divider()
                         .background(.black)
@@ -107,7 +126,7 @@ struct ContentView: View {
         }
         .foregroundStyle(.white)
         
-        
+    
         
 
         
