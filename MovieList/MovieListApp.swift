@@ -14,6 +14,6 @@ struct MovieListApp: App {
         WindowGroup {
             HomeView()
         }
-        .modelContainer(for: FavoriteMovie.self)
+        .modelContainer(for: [FavoriteMovie.self, RecentlyViewedMovie.self])
     }
 }

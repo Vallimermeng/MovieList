@@ -15,11 +15,16 @@ struct DetailView: View{
     @Environment(\.modelContext)
     private var modelContext
     @Query private var isHasMovie: [FavoriteMovie]
+    @Query private var viewedMovie: [RecentlyViewedMovie]
     
     init(movieOBJ: Movie){
         self.movieOBJ = movieOBJ
         
         _isHasMovie = Query(filter: #Predicate { $0.imdbID == movieOBJ.imdbID
+        })
+        
+        _viewedMovie = Query(filter: #Predicate{
+            $0.imdbID == movieOBJ.imdbID
         })
         
     }
@@ -128,11 +133,25 @@ struct DetailView: View{
             }
         }
         .onAppear(){
+            if(viewedMovie.isEmpty){
+                do{
+                    let recentlyViewed = RecentlyViewedMovie(imdbID: movieOBJ.imdbID, title: movieOBJ.title, year: movieOBJ.year, poster: movieOBJ.poster.absoluteString)
+                    
+                    modelContext.insert(recentlyViewed)
+                    try modelContext.save()
+                    print("Посещение сохранено")
+                    
+                }catch{
+                    print(error)
+                }
+            }
             
             Task{
                 await movieViewModel.loadMovieDetail(id: movieOBJ.imdbID)
-                
             }
+            
+            
+            
         }
         .foregroundStyle(.white)
         .font(.headline)

@@ -14,6 +14,8 @@ struct ContentView: View {
     @State private var nameField: String = ""
     @State private var isPressed: Bool = false
     
+    @Query private var recentlyViewedMovie: [RecentlyViewedMovie]
+    
     var body: some View {
         
         NavigationStack{
@@ -70,6 +72,31 @@ struct ContentView: View {
                             
                         }
                     }
+                    Divider()
+                        .background(.black)
+                    Text("Последние просмотры")
+                        .font(.title)
+                        .font(.headline)
+                    HStack{
+                        
+                        ForEach(recentlyViewedMovie, id: \.imdbID){recentlyMovie in
+                            AsyncImage(url: URL(string: recentlyMovie.poster)!){phase in
+                                if let image = phase.image{
+                                    image
+                                        .resizable()
+                                        .scaledToFit()
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                }
+                                
+                                
+                            }
+                            Text(recentlyMovie.title)
+                            
+                        }
+                        
+                    }
+                    Divider()
+                        .background(.black)
                     
                     
                     
