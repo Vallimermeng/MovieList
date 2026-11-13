@@ -10,12 +10,14 @@ import SwiftData
 
 struct DetailView: View{
     let movieOBJ: Movie
+    
     @State private var movieViewModel = MovieViewModel()
+    @State private var recentlyViewedViewModel = RecentlyViewedViewModel()
     
     @Environment(\.modelContext)
     private var modelContext
     @Query private var isHasMovie: [FavoriteMovie]
-    @Query private var viewedMovie: [RecentlyViewedMovie]
+    
     
     init(movieOBJ: Movie){
         self.movieOBJ = movieOBJ
@@ -23,9 +25,7 @@ struct DetailView: View{
         _isHasMovie = Query(filter: #Predicate { $0.imdbID == movieOBJ.imdbID
         })
         
-        _viewedMovie = Query(filter: #Predicate{
-            $0.imdbID == movieOBJ.imdbID
-        })
+        
         
     }
     
@@ -133,18 +133,13 @@ struct DetailView: View{
             }
         }
         .onAppear(){
-            if(viewedMovie.isEmpty){
-                do{
-                    let recentlyViewed = RecentlyViewedMovie(imdbID: movieOBJ.imdbID, title: movieOBJ.title, year: movieOBJ.year, poster: movieOBJ.poster.absoluteString)
-                    
-                    modelContext.insert(recentlyViewed)
-                    try modelContext.save()
-                    print("Посещение сохранено")
-                    
-                }catch{
-                    print(error)
-                }
-            }
+            
+                
+            let recentlyViewed = RecentlyViewedMovie(imdbID: movieOBJ.imdbID, title: movieOBJ.title, year: movieOBJ.year, poster: movieOBJ.poster.absoluteString)
+                
+            recentlyViewedViewModel.addRecently(modelContext: modelContext, recentlyViewed: recentlyViewed)
+                
+            
             
             Task{
                 await movieViewModel.loadMovieDetail(id: movieOBJ.imdbID)
