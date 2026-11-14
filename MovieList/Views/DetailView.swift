@@ -13,6 +13,7 @@ struct DetailView: View{
     
     @State private var movieViewModel = MovieViewModel()
     @State private var recentlyViewedViewModel = RecentlyViewedViewModel()
+    @State private var favoritesViewModel = FavoritesViewModel()
     
     @Environment(\.modelContext)
     private var modelContext
@@ -79,22 +80,18 @@ struct DetailView: View{
                                 
                                 if(isHasMovie.isEmpty){
                                     Button("Добавить в избранное"){
-                                        do{
-                                            let favorite = FavoriteMovie(imdbID: movie.imdbID, title: movie.title, year: movie.year, poster: movie.poster.absoluteString)
-                                            modelContext.insert(favorite)
-                                            try modelContext.save()
-                                            print("Фильм успешно добавлен в избранное!")
+                                        let favorite = FavoriteMovie(imdbID: movie.imdbID, title: movie.title, year: movie.year, poster: movie.poster.absoluteString)
                                             
-                                        }catch{
-                                            print("Ошибка при работе с базой данных: \(error.localizedDescription)")
-                                        }
+                                        favoritesViewModel.addFavorite(favorite: favorite, modelContext: modelContext)
+                                            
+                                        print("Фильм успешно добавлен в избранное!")
+                                            
+                                        
                                     }
                                 }else{
                                     Button("Удалить из избранного"){
                                         
-                                        if let movie = isHasMovie.first{
-                                            modelContext.delete(movie)
-                                        }
+                                        favoritesViewModel.deleteFavorite(movie: movieOBJ, modelContext: modelContext)
                                         print("Удален из избранного")
                                     }
                                 }
