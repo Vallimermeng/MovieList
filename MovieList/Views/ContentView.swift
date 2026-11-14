@@ -45,7 +45,7 @@ struct ContentView: View {
                         case .loading:
                             ProgressView("Загрузка")
                                 .progressViewStyle(.circular)
-                            
+                                    
                         case .loaded:
                             ScrollView{
                                 VStack{
@@ -83,29 +83,38 @@ struct ContentView: View {
                         Text("Последние просмотры")
                             .font(.title)
                             .font(.headline)
-                        ScrollView(.horizontal){
+                        
+                        ScrollView(.horizontal, showsIndicators: false){
                             HStack{
-                                
                                 ForEach(recentlyViewedMovie, id: \.imdbID){recentlyMovie in
                                     HStack{
                                         NavigationLink{
                                             let movieOBJ = Movie(title: recentlyMovie.title, year: recentlyMovie.year, poster: URL(string: recentlyMovie.poster)!, imdbID: recentlyMovie.imdbID)
                                             DetailView(movieOBJ: movieOBJ)
                                         }label:{
-                                            AsyncImage(url: URL(string: recentlyMovie.poster)!){phase in
-                                                if let image = phase.image{
-                                                    image
-                                                        .resizable()
-                                                        .scaledToFit()
-                                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                            VStack{
+                                                AsyncImage(url: URL(string: recentlyMovie.poster)!){phase in
+                                                    if let image = phase.image{
+                                                        image
+                                                            .resizable()
+                                                            .scaledToFit()
+                                                            .frame(width: 300, height: 300)
+                                                            
+                                                            
+                                                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                    }
+                                                    
                                                 }
-                                                
+                                                Text(recentlyMovie.title)
+                                                    .scaledToFit()
                                             }
+                                            
                                             
                                         }
                                     }
-                                    Text(recentlyMovie.title)
-                                        .scaledToFit()
+                                    .padding(.horizontal)
+                                    
+                                    
                                     
                                     
                                     
@@ -113,6 +122,7 @@ struct ContentView: View {
                                 }
                             }
                         }
+                        
                     }
                     Divider()
                         .background(.black)

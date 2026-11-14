@@ -18,45 +18,51 @@ struct FavoritesView: View{
         NavigationStack{
             ZStack{
                 Color.black.opacity(0.75).ignoresSafeArea()
-                List{
-                    
-                    ForEach(favorites){ movie in
-                        HStack{
-                            NavigationLink{
-                                DetailView(movieOBJ: Movie(title: movie.title, year: movie.year, poster: URL(string: movie.poster)!, imdbID: movie.imdbID))
-                            }label:{
-                                AsyncImage(url: URL(string: movie.poster)){phase in
-                                    if let image = phase.image{
-                                        image
-                                            .resizable()
-                                            .scaledToFit()
-                                            .clipShape(RoundedRectangle(cornerRadius: 12))
+            
+                VStack{
+                    Text("Избранные")
+                        .font(.title)
+                        .font(.headline)
+                    List{
+                        
+                        ForEach(favorites){ movie in
+                            HStack{
+                                NavigationLink{
+                                    DetailView(movieOBJ: Movie(title: movie.title, year: movie.year, poster: URL(string: movie.poster)!, imdbID: movie.imdbID))
+                                }label:{
+                                    AsyncImage(url: URL(string: movie.poster)){phase in
+                                        if let image = phase.image{
+                                            image
+                                                .resizable()
+                                                .scaledToFit()
+                                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                        }
                                     }
                                 }
+                                Text(movie.title)
+                                    .font(.headline)
                             }
-                            Text(movie.title)
-                                .font(.headline)
-                        }
-                        .listRowBackground(Color.clear)
-                        .swipeActions(edge: .trailing){
-                            if #available(iOS 26.0, *) {
-                                Button(role: .destructive){
-                                    modelContext.delete(movie)
-                                    print("Фильм удален")
-                                }label: {
-                                    Label("Удалить", systemImage: "trash")
+                            .listRowBackground(Color.clear)
+                            .swipeActions(edge: .trailing){
+                                if #available(iOS 26.0, *) {
+                                    Button(role: .destructive){
+                                        modelContext.delete(movie)
+                                        print("Фильм удален")
+                                    }label: {
+                                        Label("Удалить", systemImage: "trash")
+                                    }
+                                } else {
+                                    // Fallback on earlier versions
                                 }
-                            } else {
-                                // Fallback on earlier versions
                             }
+                            
                         }
-                        
                     }
+                    .listRowSeparatorTint(.white)
+                    .scrollContentBackground(.hidden)
+                    .background(Color.clear)
+                    .foregroundStyle(.white)
                 }
-                .listRowSeparatorTint(.white)
-                .scrollContentBackground(.hidden)
-                .background(Color.clear)
-                .foregroundStyle(.white)
             }
             
         }
